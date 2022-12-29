@@ -26,10 +26,10 @@ def clv_cluster_missing_products(df,
                                  period_months,
                                  customer):
 
-    #logging.info("Computing CLV")
+    logging.info("Computing CLV\n")
     sales = clv_data_cleaning(df, date_column, value_column, customer_column)
     
-    print("Step 1")
+    logging.info("Step 1\n")
     
     clv_t = df_to_clv(sales,
                     customer_column,
@@ -44,7 +44,7 @@ def clv_cluster_missing_products(df,
                     churn_groups_bins=3,
                     churn_groups_labels = ['churn', 'medium', 'alive'])
 
-    print("Step 2")
+    logging.info("Step 2\n")
     
     clv = clv_t[0].reset_index().rename(columns={"id": customer_column})
 

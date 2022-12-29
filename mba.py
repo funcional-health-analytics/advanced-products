@@ -15,8 +15,8 @@ from utils.clv_clusters_missing_products import clv_cluster_missing_products
 from utils.anomaly_detector import anomaly_detector
 from utils.recommender_generator import recommender
 from utils.data_cleaning import mba_data_cleaning
-from ds_colombia.clv.clv_churn import df_to_clv, create_transactional_table, create_summary_table
-from utils.clv_clusters_missing_products import clv_cluster_missing_products
+
+
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 logging.info('Loading the client json file.........\n')
@@ -38,7 +38,7 @@ cur = conn.cursor()
 
 logging.info('Creating a sql query..........\n')
 df_sql = f"""
-              select product_id, product_name, product_group,sale_unity,sale_order_id,
+              select product_id, product_name, product_group, sale_date, sale_unity,sale_order_id,
                      sale_total_price,cod_dim_customer,store_name,product_atclevel4_description,
                      customer_type,customer_group,customer_category,customer_salary,
                      customer_city, customer_gender, customer_age, customer_family,
@@ -122,77 +122,78 @@ mba_generator(df,
               allowed_product_types=allowed_product_types,
               customer='comfandi')
 
-logging.info("\nMBA finished without problems")
+logging.info("\nMBA finished without problems\n")
 
-#logging.info("Now it's the CLV and missing products turn")
-# end_date = date.today().strftime("%Y-%m-%d")
-# clv_cluster_missing_products(df,
-#                              bucket,
-#                              products_path,
-#                              report_date,
-#                              client_columns['product_granularity'],
-#                              client_columns['product_name'],
-#                              client_columns['date_column'],
-#                              client_columns['quantity_column'],
-#                              client_columns['order_column'],
-#                              client_columns['customer_column'],
-#                              client_columns['store_granularity'],
-#                              client_columns['value_column'],
-#                              end_date,
-#                              period_months=12,
-#                              customer='comfandi') 
-#                            
+logging.info("Now it's the CLV and missing products turn")
+end_date = date.today().strftime("%Y-%m-%d")
+clv_cluster_missing_products(df,
+                              bucket,
+                              products_path,
+                              report_date,
+                              client_columns['product_granularity'],
+                              client_columns['product_name'],
+                              client_columns['date_column'],
+                              client_columns['quantity_column'],
+                              client_columns['order_column'],
+                              client_columns['customer_column'],
+                              client_columns['store_granularity'],
+                              client_columns['value_column'],
+                              end_date,
+                              period_months=12,
+                              customer='comfandi') 
 
-#logging.info("Anomalies time!")
-#anomaly_detector(df,
-#                  bucket,
-#                  products_path,
-#                  report_date,
-#                  client_columns['anomaly_product_granularity'],
-#                  client_columns['product_name'],
-#                  client_columns['date_column'],
-#                  client_columns['quantity_column'],
-#                  client_columns['order_column'],
-#                  client_columns['customer_column'],
-#                  client_columns['store_granularity'],
-#                  stddev=2,
-#                  customer='comfandi')
+logging.info("\n Clv  missing products \n")
+
+logging.info("Anomalies time!")
+anomaly_detector(df,
+                  bucket,
+                  products_path,
+                  report_date,
+                  client_columns['anomaly_product_granularity'],
+                  client_columns['product_name'],
+                  client_columns['date_column'],
+                  client_columns['quantity_column'],
+                  client_columns['order_column'],
+                  client_columns['customer_column'],
+                  client_columns['store_granularity'],
+                  stddev=2,
+                  customer='comfandi')
 
 
-#logging.info("Finally, recommendations to our special users")
-# ne.set_num_threads(ne.detect_number_of_threads())
-# sales_columns = [client_columns['product_granularity'],
-#                  client_columns['customer_column']]
+logging.info("Finally, recommendations to our special users")
+#ne.set_num_threads(ne.detect_number_of_threads())
+sales_columns = [client_columns['product_granularity'],
+                  client_columns['customer_column']]
 
-# customers_columns = [client_columns['customer_column'],
-#                      client_columns['customer_type'],
-#                      client_columns['customer_group'],
-#                      client_columns['customer_category'],
-#                      client_columns['customer_salary'],
-#                      client_columns['customer_city'],
-#                      client_columns['customer_gender'],
-#                      client_columns['customer_age'],
-#                      client_columns['customer_family']]
+customers_columns = [client_columns['customer_column'],
+                      client_columns['customer_type'],
+                      client_columns['customer_group'],
+                      client_columns['customer_category'],
+                      client_columns['customer_salary'],
+                      client_columns['customer_city'],
+                      client_columns['customer_gender'],
+                      client_columns['customer_age'],
+                      client_columns['customer_family']]
 
-# products_columns = [client_columns['product_granularity'],
-#                     client_columns['product_brand'],
-#                     client_columns['product_class'],
-#                     client_columns['product_presentation'],
-#                     client_columns['product_sub_family'],
-#                     client_columns['product_family']]
+products_columns = [client_columns['product_granularity'],
+                     client_columns['product_brand'],
+                     client_columns['product_class'],
+                     client_columns['product_presentation'],
+                     client_columns['product_sub_family'],
+                     client_columns['product_family']]
 
-# recommender(df,
-#             bucket,
-#             products_path,
-#             model_path,
-#             report_date,
-#             sales_columns,
-#             customers_columns,
-#             products_columns,
-#             customer='comfandi',
-#             n_recommendations=10,
-#             customer_column=client_columns['customer_column'],
-#             product_granularity=client_columns['product_granularity'],
-#             product_name=client_columns['product_name'],
-#             quantity_column=client_columns['quantity_column'],
-#             enhance_diversity=False)
+recommender(df,
+             bucket,
+             products_path,
+             model_path,
+             report_date,
+             sales_columns,
+             customers_columns,
+             products_columns,
+             customer='comfandi',
+             n_recommendations=10,
+             customer_column=client_columns['customer_column'],
+             product_granularity=client_columns['product_granularity'],
+             product_name=client_columns['product_name'],
+             quantity_column=client_columns['quantity_column'],
+             enhance_diversity=False)

@@ -40,8 +40,13 @@ def mba_data_cleaning(df,
     return df, excluded_df
 
 
-def clv_data_cleaning(df, date_column, value_column, customer_column):
+def clv_data_cleaning(df,
+                      date_column,
+                      value_column, 
+                      customer_column):
+
     last_year = (df[date_column].max() - pd.DateOffset(months=12))
+    
     logging.info('step1')
     end_date = df[date_column].max()
     
