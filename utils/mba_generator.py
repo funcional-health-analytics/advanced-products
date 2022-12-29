@@ -36,16 +36,19 @@ def mba_generator(df,
                                         allowed_product_types)
 
     logging.info("Calculating MBA. This is gonna take a while")
+    
     rules, rec_table = df_to_mba(df,
                                  product_column=product_granularity,
                                  quantity_column=quantity_column,
                                  order_column=order_column,
                                  n_products=n_products,
-#                                  n_rules=n_rules,
+#                                n_rules = n_rules,
                                  min_support=min_support,
                                  max_len=max_len,
                                  use_colnames=True)
 
+
+    
     logging.info("Preparing MBA output tables")
     rules, mba_store_df, mba_online_df = mba_reports(df,
                                                      rules,
@@ -58,7 +61,7 @@ def mba_generator(df,
     excluded_path = f"{products_path}/{customer}/{report_date}/{report_date}_{customer}_excluded_mba.xlsx"
     ws3.write_xlsx_to_s3(excluded_df, bucket, excluded_path)
     
-    logging.info("Saving rules")
+    logging.info("Saving rules..........")
     rules_path = f"{products_path}/{customer}/{report_date}/{report_date}_{customer}_mba_rules.xlsx"
     if ((rules.shape[0]<1048576) and (rules.shape[1]<16384)):
         ws3.write_xlsx_to_s3(rules, bucket, rules_path)
@@ -69,7 +72,7 @@ def mba_generator(df,
     mba_path_stores = f"{products_path}/{customer}/{report_date}/{report_date}_{customer}_mba_recommendations_stores.xlsx"
     mba_path_online = f"{products_path}/{customer}/{report_date}/{report_date}_{customer}_mba_recommendations_online.xlsx"
     
-    logging.info("Saving store or online")
+    logging.info("Saving store or online..........")
     if not mba_store_df.empty:
         if ((mba_store_df.shape[0]<1048576) and (mba_store_df.shape[1]<16384)):
             ws3.write_xlsx_to_s3(mba_store_df, bucket, mba_path_stores, sheet_name='action plan stores')
@@ -82,4 +85,4 @@ def mba_generator(df,
         else:
             mba_path_online = f"{products_path}/{customer}/{report_date}/{report_date}_{customer}_mba_recommendations_online.csv"
             ws3.write_csv_to_s3(mba_online_df, bucket, mba_path_online)
-            
+    
