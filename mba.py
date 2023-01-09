@@ -7,6 +7,9 @@ import json
 from datetime import datetime
 from datetime import date
 import snowflake.connector
+import os
+
+
 
 sys.path.insert(0, 'src/')
 from ds_colombia.clv.clv_churn import df_to_clv, create_transactional_table, create_summary_table
@@ -54,9 +57,6 @@ logging.info('Fetch the result set from the cursor and deliver it as the Pandas 
 df = cur.fetch_pandas_all()
 df.columns = df.columns.str.lower()
 
-# Local file to test 
-#df = pd.read_parquet('data_test202211.parquet', engine='pyarrow') 
-#df = pd.read_parquet('comfandi.parquet')
 
 report_date = str(datetime.now())[:10]
 bucket = 'fnc-data-science'
@@ -65,46 +65,24 @@ model_path = f"test-colombia/models"
 view_path = data['comfandi']['view_path']
 client_columns = data['comfandi']['extract_columns']
 
-columns = [client_columns['product_granularity'],
-           client_columns['product_name'],
-           client_columns['product_group'],
-           client_columns['date_column'],
-           client_columns['quantity_column'],
-           client_columns['order_column'],
-           client_columns['value_column'],
-           client_columns['customer_column'],
-           client_columns['store_granularity'],
-           client_columns['anomaly_product_granularity'],
-           client_columns['customer_type'],
-           client_columns['customer_group'],
-           client_columns['customer_category'],
-           client_columns['customer_salary'],
-           client_columns['customer_city'],
-           client_columns['customer_gender'],
-           client_columns['customer_age'],
-          client_columns['customer_family'],
-          client_columns['product_brand'],
-          client_columns['product_class'],
-          client_columns['product_presentation'],
-          client_columns['product_sub_family'],
-          client_columns['product_family']]
-
-#logging.info("Reading files. Dont't mind the logging overload")
-#df = wr.s3.read_parquet(view_path, columns=columns)
-
-logging.info("\nLet's run the MBA stuff")
-allowed_product_types = list(
-    pd.read_csv('clients/comfandi/comfandi_product_categories.csv')['Allowed Categories'].values)
-
-df = df[df[client_columns['product_granularity']].isin(allowed_product_types)]
-
-
-logging.info('Starting with the MBA function......\n')
-
 logging.info('The dataframe shape is\n')
 logging.info('Rows- {}'.format(df.shape[0]))
 logging.info('Cols- {}'.format(df.shape[1]))
-mba_generator(df,
+
+mba = os.getenv('MBA', 'False').lower() in ('true', '1', 't')
+clv = os.getenv('CLV', 'False').lower() in ('true', '1', 't')
+ad = os.getenv('AD', 'False').lower() in ('true', '1', 't')
+reco = os.getenv('RECOMMENDER', 'False').lower() in ('true', '1', 't')
+
+logging.info("\n The products are {}".format([mba,clv,ad,reco]))
+
+if(mba):
+    logging.info("\nLet's run the MBA stuff")
+    allowed_product_types = list( pd.read_csv('clients/comfandi/comfandi_product_categories.csv')['Allowed Categories'].values)
+    df = df[df[client_columns['product_granularity']].isin(allowed_product_types)]
+    
+    logging.info('Starting with the MBA function......\n')
+    mba_generator(df,
               bucket,
               products_path,
               report_date,
@@ -121,12 +99,12 @@ mba_generator(df,
               max_len=2,
               allowed_product_types=allowed_product_types,
               customer='comfandi')
+    logging.info("\nMBA finished without problems\n")
 
-logging.info("\nMBA finished without problems\n")
-
-logging.info("Now it's the CLV and missing products turn")
-end_date = date.today().strftime("%Y-%m-%d")
-clv_cluster_missing_products(df,
+if(clv):
+    logging.info("Now it's the CLV and missing products turn")
+    end_date = date.today().strftime("%Y-%m-%d")
+    clv_cluster_missing_products(df,
                               bucket,
                               products_path,
                               report_date,
@@ -141,11 +119,11 @@ clv_cluster_missing_products(df,
                               end_date,
                               period_months=12,
                               customer='comfandi') 
+    logging.info("\n ClV  finished without problems \n")
 
-logging.info("\n Clv  missing products \n")
-
-logging.info("Anomalies time!")
-anomaly_detector(df,
+if(ad):
+    logging.info("Anomalies time!")
+    anomaly_detector(df,
                   bucket,
                   products_path,
                   report_date,
@@ -158,31 +136,29 @@ anomaly_detector(df,
                   client_columns['store_granularity'],
                   stddev=2,
                   customer='comfandi')
+    logging.info("\n Anomaly Detector  finished without problems \n")
 
-
-logging.info("Finally, recommendations to our special users")
-#ne.set_num_threads(ne.detect_number_of_threads())
-sales_columns = [client_columns['product_granularity'],
-                  client_columns['customer_column']]
-
-customers_columns = [client_columns['customer_column'],
-                      client_columns['customer_type'],
-                      client_columns['customer_group'],
-                      client_columns['customer_category'],
-                      client_columns['customer_salary'],
-                      client_columns['customer_city'],
-                      client_columns['customer_gender'],
-                      client_columns['customer_age'],
-                      client_columns['customer_family']]
-
-products_columns = [client_columns['product_granularity'],
-                     client_columns['product_brand'],
-                     client_columns['product_class'],
-                     client_columns['product_presentation'],
-                     client_columns['product_sub_family'],
-                     client_columns['product_family']]
-
-recommender(df,
+if(reco):
+    logging.info("Recommender time!")
+    sales_columns = [client_columns['product_granularity'], client_columns['customer_column']]
+    
+    customers_columns = [client_columns['customer_column'],
+                         client_columns['customer_type'],
+                         client_columns['customer_group'],
+                         client_columns['customer_category'],
+                         client_columns['customer_salary'],
+                         client_columns['customer_city'],
+                         client_columns['customer_gender'],
+                         client_columns['customer_age'],
+                         client_columns['customer_family']]
+    
+    products_columns = [client_columns['product_granularity'],
+                        client_columns['product_brand'],
+                        client_columns['product_class'],
+                        client_columns['product_presentation'],
+                        client_columns['product_sub_family'],
+                        client_columns['product_family']]
+    recommender(df,
              bucket,
              products_path,
              model_path,
@@ -197,3 +173,4 @@ recommender(df,
              product_name=client_columns['product_name'],
              quantity_column=client_columns['quantity_column'],
              enhance_diversity=False)
+    logging.info("\n Recommender  finished without problems \n")
