@@ -2,7 +2,7 @@ from ds_colombia.market_basket_analysis.mba import df_to_mba
 import logging
 from utils.data_cleaning import mba_data_cleaning
 import utils.write_to_s3 as ws3
-
+from utils.reports import mba_reports
 
 def mba_generator(df,
                   bucket,
@@ -21,14 +21,7 @@ def mba_generator(df,
                   max_len,
                   allowed_product_types,
                   customer):
-    # TODO: passar a funçao mba reports como parametro
-    if customer == 'comfandi':
-        from utils.comfandi_reports import mba_reports
-    elif customer == 'farmatodo':
-        from utils.farmatodo_reports import mba_reports
-    elif customer == 'colsubsidio':
-        from utils.colsubsidio_reports import mba_reports
-
+    
     logging.info("Cleaning data")
     df, excluded_df = mba_data_cleaning(df,
                                         product_granularity,
