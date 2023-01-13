@@ -82,24 +82,24 @@ if(mba):
     df = df[df[client_columns['product_granularity']].isin(allowed_product_types)]
     
     logging.info('Starting with the MBA function......\n')
-    mba_generator(df,
-              bucket,
-              products_path,
-              report_date,
-              client_columns['product_granularity'],
-              client_columns['product_name'],
-              client_columns['product_group'],
-              client_columns['date_column'],
-              client_columns['quantity_column'],
-              client_columns['order_column'],
-              client_columns['value_column'],
-              n_products=300,
-              n_rules = 500,
-              min_support=0.00005,
-              max_len=2,
-              allowed_product_types=allowed_product_types,
-              customer='comfandi')
+    mba_generator(df=df,
+                  bucket=bucket,
+                  products_path = products_path,
+                  report_date = report_date,
+                  product_granularity = client_columns['product_granularity'],
+                  product_name = client_columns['product_name'],
+                  quantity_column = client_columns['quantity_column'],
+                  order_column = client_columns['order_column'],
+                  value_column = client_columns['value_column'],
+                  n_products = 300,
+                  min_support = 0.00005,
+                  max_len = 2 ,
+                  allowed_product_types = allowed_product_types,
+                  customer = 'comfandi')
     logging.info("\nMBA finished without problems\n")
+
+
+
 
 if(clv):
     logging.info("Now it's the CLV and missing products turn")
