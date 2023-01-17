@@ -1,6 +1,4 @@
 import pandas as pd 
-import numexpr as ne
-import awswrangler as wr
 import sys
 import logging
 import json
@@ -8,20 +6,14 @@ from datetime import datetime
 from datetime import date
 import snowflake.connector
 import os
-
-
-
-sys.path.insert(0, 'src/')
-from ds_colombia.clv.clv_churn import df_to_clv, create_transactional_table, create_summary_table
 from utils.mba_generator import mba_generator
 from utils.clv_clusters_missing_products import clv_cluster_missing_products
 from utils.anomaly_detector import anomaly_detector
 from utils.recommender_generator import recommender
-from utils.data_cleaning import mba_data_cleaning
+sys.path.insert(0, 'src/')
 
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-
 logging.info('Loading the client json file.........\n')
 with open('clients/clients.json') as json_file:
     data = json.load(json_file)
