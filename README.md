@@ -1,7 +1,23 @@
 # Advanced-Products
 In this project we run four algorithms to understand sale's data, they are:
 
-## MBA
+## MBA: 
+Market basket analysis finds out customers’ purchasing patterns by discovering important associations among the products which they place in their shopping baskets. The aim of market basket analysis is to determine which items are frequently purchased together by customers. The term frequent items mean the itemsets which satisfy a user-specified predefined percentage value. For example, if customers have purchased milk in a supermarket, then how many greatly possibility to purchase bread simultaneously with milk. To discover the associations we use **FP-Growth** which is one of the most common algorithms for mining frequent itemsets. Here, the minimum support is needed to satisfy for identifying the frequent itemsets. Some of the main measures used in the algorithm are:
+
+* **Confidence**: 
+It is basically conditional probability. If there are items: X and Y, confidence measures the percentage of times item Y was purchased,given that item X was purchased. Confidence values ranges from 0 to 1. Higher confidence value indicates that the item Y will be purchased in more number of cases given that X was purchased.
+
+* **Lift**:
+It is the ratio of Confidence / Support of item sets.It is the main measure which is used to determine the usefulness of Market Basket Analysis rule.If Lift of item set is above 1,then the items will be bought together more often. 
+
+* **Conviction**: 
+It is similar to lift but unlike lift it is a directed measure.It compares the probability that X appears without Y with the actual frequency of the appearance of X without Y in the transaction data.
+
+* **Leverage** : 
+Leverage measures the difference of X and Y appearing together in the data set and what would be expected if X and Y where statistically dependent. It helps in finding how many more units of items X and Y together are sold than expected from the independent sales of X and Y item.
+	
+This analysis helps the shop owners to take many important business decisions, identify regular customers, increase products sale, catalog design and many more. The main goal of market basket analysis is to extract associations among purchasing products. It also helps retailers to product placement on shelves by placing similar products close to one another. For example, If customers who purchase computers also tend to buy anti-virus software at the same time, then placing the hardware display close to software display may help increase the sale of both items. For more information about MBA see [1] and references therein. 
+
 ## CLV
 ## Recomendations
 ## Anomalies
@@ -84,3 +100,6 @@ The main parameters are:
 ### Output
 
 O output estará no s3:fnc-data-science/test-colombia/products.
+
+## References
+1. Market Basket Analysis Using Apriori and FP Growth Algorithm, 22nd International Conference on Computer and Information Technology (ICCIT), 18-20 December, 2019.
