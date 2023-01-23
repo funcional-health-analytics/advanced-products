@@ -19,6 +19,16 @@ Leverage measures the difference of X and Y appearing together in the data set a
 This analysis helps the shop owners to take many important business decisions, identify regular customers, increase products sale, catalog design and many more. The main goal of market basket analysis is to extract associations among purchasing products. It also helps retailers to product placement on shelves by placing similar products close to one another. For example, If customers who purchase computers also tend to buy anti-virus software at the same time, then placing the hardware display close to software display may help increase the sale of both items. For more information about MBA see [1] and references therein. 
 
 ## CLV
+The Customer Lifetime Value or CLV tells us the predicted value each customer will bring to your business over their lifetime, and as such requires the ability to detect which customers will churn as well as what they’re likely to spend if they’re retained.
+
+CLV can be used to help us focus your attention on retaining the most important customers (and acquiring others like them), and it can help us forecast what you’ll get from your customers if you can retain them. It’s also really useful for demonstrating the bigger picture to non-marketers who may think only of the operational costs of resolving issues, instead of the cost of losing a valuable customer. Here we’re going to use two different models - the **Beta Geometric Negative Binomial Distribution** or **BG/NBD model** and the **Gamma-Gamma** model - such models allow us to predict (see [2,3] and references there in):
+
+* Which customers are still customers
+* Who will order again in the next period
+* The number of orders each customer will place
+* The average order value of each customer’s order
+* The total amount each customer will generate for the business
+
 ## Recomendations
 ## Anomalies
 
@@ -103,3 +113,7 @@ O output estará no s3:fnc-data-science/test-colombia/products.
 
 ## References
 1. Market Basket Analysis Using Apriori and FP Growth Algorithm, 22nd International Conference on Computer and Information Technology (ICCIT), 18-20 December, 2019.
+
+2. Quickstart of lifetimes Python package, https://lifetimes.readthedocs.io/en/latest/Quickstart.html
+
+3. The Gamma-Gamma Model of Monetary Value, Peter S. February 2013,  Faderhttp://www.brucehardie.com/notes/025/gamma_gamma.pdf
