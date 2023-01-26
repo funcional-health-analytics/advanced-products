@@ -75,3 +75,4 @@ def mba_generator(df,
             mba_path_online = f"{products_path}/{customer}/{report_date}/{report_date}_{customer}_mba_recommendations_online.csv"
             ws3.write_csv_to_s3(mba_online_df, bucket, mba_path_online)
     
+y4K$QjxFwGjo
