@@ -31,7 +31,12 @@ CLV can be used to help us focus your attention on retaining the most important 
 
 ## Recomendations
 ## Anomalies
-Anomalies detection helps us to see those transactions with unusual behavior, that is, such transactions wich the total units sold exceed the average units sold by 2 standard deviations. It takes as a base the average of all transactions in the last 2 years.
+Anomalies detection helps us to see those transactions with unusual behavior, that is, such transactions wich the total units sold exceed the average units sold by 2 standard deviations. 
+
+![Alt text](./Standard_deviation_diagram.svg)
+
+It takes as a base the average of all transactions in the last 2 years to find the transactions that are in the tails of the distribution as we can see in the graph above.
+
 # Architecture
 
 ## Requirements
