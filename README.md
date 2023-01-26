@@ -31,7 +31,7 @@ CLV can be used to help us focus your attention on retaining the most important 
 
 ## Recomendations
 ## Anomalies
-
+Anomalies detection help us to see those transactions with unusual behavior, that is, such transations wich the total units sold exceeding the average units sold in 2 standard deviation. It takes as base the average of all transactions in the last 2 years.  
 # Architecture
 
 ## Requirements
