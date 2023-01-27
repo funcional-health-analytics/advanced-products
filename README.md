@@ -30,6 +30,8 @@ CLV can be used to help us focus your attention on retaining the most important 
 * The total amount each customer will generate for the business
 
 ## Recomendations
+In a very general way, the recommender algorithm aims at suggesting relevant items to users (products to buy). Recommender systems are really critical in some industries as they can generate a huge amount of income when they are efficient or also be a way to stand out significantly from competitors. To develop recommender engines we are going to use the **turicreate** Python package. The **turicreate** recommender toolkit provides a unified interface to train a variety of recommender models and use them to make recommendations.
+
 ## Anomalies
 Anomalies detection helps us to see those transactions with unusual behavior, that is, such transactions wich the total units sold exceed the average units sold by 2 standard deviations. 
 
