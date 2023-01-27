@@ -32,6 +32,8 @@ CLV can be used to help us focus your attention on retaining the most important 
 ## Recomendations
 In a very general way, the recommender algorithm aims at suggesting relevant items to users (products to buy). Recommender systems are really critical in some industries as they can generate a huge amount of income when they are efficient or also be a way to stand out significantly from competitors. To develop recommender engines we are going to use the **turicreate** Python package. The **turicreate** recommender toolkit provides a unified interface to train a variety of recommender models and use them to make recommendations.
 
+Recommender models can be created using **turicreate.recommender.create()** or loaded from a previously saved model using **turicreate.load_model()**. The input data must be an SFrame with a column containing user ids, a column containing item ids, and optionally a column containing target values such as movie ratings, etc. When a target is not provided (as is the case in implicit feedback settings), then a collaborative filtering model based on item-item similarity is returned. For more details, please see the documentation for **turicreate.recommender.create()**.
+
 ## Anomalies
 Anomalies detection helps us to see those transactions with unusual behavior, that is, such transactions wich the total units sold exceed the average units sold by 2 standard deviations. 
 
